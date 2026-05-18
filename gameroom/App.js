@@ -28,6 +28,18 @@ export default function App() {
 
   }, []);
 
+  function entrouGameRoom() {
+    if(!nome)
+      return;
+  }
+
+  socket.emit("join", nome);
+  setEntrou(true); //se o nome existir, emite um evento pro back que é tipo join, que é recebido por "on"
+  
+  function movimentar (dx, dy) {
+    const usuario = usuarios.find(user => user.id == id);
+  }
+  
   if (entrou == false) {
     return (
       <View>
@@ -36,7 +48,7 @@ export default function App() {
             value={nome}
             onChangeText={(novoTexto) => setNome(novoTexto)}
           </TextInput>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => entrouGameRoom()}>
             <Text>Entrar</Text>
           </TouchableOpacity>
       </View>
@@ -45,11 +57,25 @@ export default function App() {
 else {
   return (
     <View>
+        <View>
+          {
+            usuarios.map(usuario => (
+              <View> 
+                <Text>{usuario.name}</Text>
+              </View>
+            ))
+          }
+        </View>
 
+        <View>
+          <TouchableOpacity>
+            <Text>Cima</Text>
+          </TouchableOpacity>
+        </View>
     </View>
   );
 }
-  return (
+  return (  
     <View>
     </View>
   );
