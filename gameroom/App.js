@@ -3,18 +3,18 @@ import {useState, useEffect} from 'react'; //useeffect dispara efeito com base e
 import {io} from 'socket.io-client';
 
 const socket = io('https://squarewebsocketbackend.onrender.com', {
-  transports: ['websoocket'] //o transporte ocorre com websoocket
+  transports: ['websocket'] //o transporte ocorre com websoocket
 }); //permite que conectamos a algum servidor
 
 export default function App() {
   const [nome, setNome] = useState('');
   const [entrou, setEntrou] = useState(false);
-  const [usuarios, seUsuarios] = useState([]);
-  const [Id, useId] = useState(null);
+  const [usuarios, setUsuarios] = useState([]);
+  const [id, setId] = useState(null);
 
   useEffect(() => {
     socket.on('player', (id) => {
-      setImmediate(id);
+      setId(id);
     });//ele dispara informações com base do usuário.
 
     socket.on('update', (users) => {
@@ -31,11 +31,11 @@ export default function App() {
   function entrouGameRoom() {
     if(!nome)
       return;
+
+    socket.emit("join", nome);
+    setEntrou(true); //se o nome existir, emite um evento pro back que é tipo join, que é recebido por "on"
   }
 
-  socket.emit("join", nome);
-  setEntrou(true); //se o nome existir, emite um evento pro back que é tipo join, que é recebido por "on"
-  
   function movimentar (dx, dy) {
     const usuario = usuarios.find(user => user.id == id);
 
@@ -55,10 +55,11 @@ export default function App() {
     return (
       <View style={styles.centralizar}>
           <Text> Digite seu Nick:</Text>
-          <TextInput>
+          <TextInput
             style={styles.input}
             value={nome}
             onChangeText={(novoTexto) => setNome(novoTexto)}
+          >
           </TextInput>
           <TouchableOpacity onPress={() => entrouGameRoom()}>
             <Text>Entrar</Text>
@@ -88,20 +89,25 @@ else {
           }
         </View>
 
-        <View>
+        <View style={styles.controles}>
           <TouchableOpacity onPress={() => movimentar(0, -20)}>
             <Text>Cima</Text>
           </TouchableOpacity>
-        </View>
-        <View>
+        <View style={styles.esquerdaDireita}>
           <TouchableOpacity onPress={() => movimentar(-20, -0)}>
             <Text>Esquerda</Text>
           </TouchableOpacity>
-        </View>
-          <TouchableOpacity onPress={() => movimentar(0, 20)}>
+          <TouchableOpacity onPress={() => movimentar(20, 0)}>
             <Text>Direita</Text>
+          </TouchableOpacity> 
+        </View>   
+      <View>
+          <TouchableOpacity onPress={() => movimentar(0, 20)}>
+            <Text>Baixo</Text>
           </TouchableOpacity>
+        </View>
     </View>
+  </View>
   );
 }}
 
@@ -135,7 +141,7 @@ const styles = StyleSheet.create({
 
   },
 
-  areaJogo: {
+  areaJogo1: {
 
     flex: 1,
 

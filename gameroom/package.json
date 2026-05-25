@@ -11,7 +11,7 @@
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "expo": "~54.0.33",
+    "expo": "^56.0.4",
     "expo-status-bar": "~3.0.9",
     "express": "^5.2.1",
     "react": "19.1.0",
